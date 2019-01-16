@@ -1,3 +1,4 @@
+const char LispLibrary[] PROGMEM =
 /* uLisp ESP Version 2.5 - www.ulisp.com
    David Johnson-Davies - www.technoblogy.com - 30th November 2018
 
@@ -11,7 +12,7 @@
 #define serialmonitor
 // #define printgcs
 // #define sdcardsupport
-// #define lisplibrary
+//#define lisplibrary
 
 // Includes
 
@@ -85,7 +86,7 @@ PRINCTOSTRING, PRIN1TOSTRING, LOGAND, LOGIOR, LOGXOR, LOGNOT, ASH, LOGBITP, EVAL
 MAKUNBOUND, BREAK, READ, PRIN1, PRINT, PRINC, TERPRI, READBYTE, READLINE, WRITEBYTE, WRITESTRING,
 WRITELINE, RESTARTI2C, GC, ROOM, SAVEIMAGE, LOADIMAGE, CLS, PINMODE, DIGITALREAD, DIGITALWRITE,
 ANALOGREAD, ANALOGWRITE, DELAY, MILLIS, SLEEP, NOTE, EDIT, PPRINT, PPRINTALL, AVAILABLE, WIFISERVER,
-WIFISOFTAP, CONNECTED, WIFILOCALIP, WIFICONNECT, ENDFUNCTIONS };
+WIFISOFTAP, CONNECTED, WIFILOCALIP, WIFICONNECT, PULSEIN, ENDFUNCTIONS };
 
 // Typedefs
 
@@ -2777,6 +2778,14 @@ object *fn_digitalwrite (object *args, object *env) {
   return mode;
 }
 
+object *fn_pulsein (object *args, object *env) {
+  (void) env;
+  int pin = integer(first(args));
+  object *mode = second(args);
+  if (integerp(mode)) return number(pulseIn(pin, mode->integer));
+  return number(pulseIn(pin, mode ? HIGH : LOW));
+}
+
 object *fn_analogread (object *args, object *env) {
   (void) env;
   int pin = integer(first(args));
@@ -3197,6 +3206,7 @@ const char string177[] PROGMEM = "wifi-softap";
 const char string178[] PROGMEM = "connected";
 const char string179[] PROGMEM = "wifi-localip";
 const char string180[] PROGMEM = "wifi-connect";
+const char string181[] PROGMEM = "pulse-in";
 
 const tbl_entry_t lookup_table[] PROGMEM = {
   { string0, NULL, NIL, NIL },
@@ -3380,6 +3390,7 @@ const tbl_entry_t lookup_table[] PROGMEM = {
   { string178, fn_connected, 1, 1 },
   { string179, fn_wifilocalip, 0, 0 },
   { string180, fn_wificonnect, 0, 2 },
+  { string181, fn_pulsein, 0, 2 },
 };
 
 // Table lookup functions
